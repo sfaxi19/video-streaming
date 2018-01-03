@@ -1,0 +1,3 @@
+[submodule "avi-maker"]
+	path = avi-maker
+	url = http://github.com/sfaxi19/avi-maker
