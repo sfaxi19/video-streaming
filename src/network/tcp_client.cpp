@@ -49,7 +49,9 @@ void tcp_client(const char *hostname, uint16_t port, uint16_t deviceID) {
     if (connect(sockfd, (sockaddr_t *) &addr, sizeof(addr)) != 0) PERROR("ERROR on connect");
     printf("Connection complite.\n");
     ssize_t len = 0;
+    printf("DeviceID: %d\n", deviceID);
     cv::VideoCapture stream(deviceID);
+    if(!stream.isOpened()) ERROR("Device index %d is not correct", deviceID);
     do {
         //=============================================================
         //                       Считывание кадра
