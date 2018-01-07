@@ -21,4 +21,4 @@ add_subdirectory(avi-maker/)
 
 include_directories(${OpenCV_INCLUDE_DIRS})
 
-target_link_libraries(video-streaming ${OpenCV_LIBS} avi-maker)
+target_link_libraries(video-streaming ${OpenCV_LIBS} avi-maker-lib)
