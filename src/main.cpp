@@ -36,8 +36,8 @@ int main(int argn, char *argv[]) {
         if (in_argn != 2) ERROR("Bad input args for -s param");
         tcp_server((uint16_t) atoi(argv[2]));
     } else if (param == "-c") {
-        if (in_argn != 3) ERROR("Bad input args for -c param");
-        tcp_client(argv[2], (uint16_t) atoi(argv[3]));
+        if (in_argn != 4) ERROR("Bad input args for -c param:\n [2] - host\n[3] - port\n[4] - deviceID");
+        tcp_client(argv[2], (uint16_t) atoi(argv[3]), (uint16_t) atoi(argv[3]));
     } else {
         ERROR("Bad input args");
     }

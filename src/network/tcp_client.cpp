@@ -40,7 +40,7 @@ void fill_data(vs::packet_info_s &packet_info, vs::header_s &header, uint8_t *by
     memcpy(packet_info.packet + sizeof(vs::header_s), bytes, header.data_length);
 }
 
-void tcp_client(const char *hostname, uint16_t port) {
+void tcp_client(const char *hostname, uint16_t port, uint16_t deviceID) {
     int sockfd;
     sockaddr_in_t addr{};
     sockfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -49,7 +49,7 @@ void tcp_client(const char *hostname, uint16_t port) {
     if (connect(sockfd, (sockaddr_t *) &addr, sizeof(addr)) != 0) PERROR("ERROR on connect");
     printf("Connection complite.\n");
     ssize_t len = 0;
-    cv::VideoCapture stream(1);
+    cv::VideoCapture stream(deviceID);
     do {
         //=============================================================
         //                       Считывание кадра

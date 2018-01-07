@@ -69,7 +69,7 @@ uint8_t *from2d_to_rev_1d_malloc(TRIPLERGB **mrx, int h, int w);
 
 void tcp_server(uint16_t port);
 
-void tcp_client(const char *ip, uint16_t port);
+void tcp_client(const char *ip, uint16_t port, uint16_t deviceID);
 
 void addr_init(sockaddr_in_t &addr, uint16_t port);
 
