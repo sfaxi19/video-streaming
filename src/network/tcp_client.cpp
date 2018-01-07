@@ -70,6 +70,7 @@ void tcp_client(const char *hostname, uint16_t port) {
         printf("\n");
         write(sockfd, packet_info.packet, packet_info.length);
         delete[] frame;
+        packet_info.clear();
         printf("sending %d bytes\n", packet_info.length);
         //=============================================================
         //                       Ожидание ответа

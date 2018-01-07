@@ -52,6 +52,10 @@ namespace vs {
     struct packet_info_s {
         uint8_t *packet{};
         uint32_t length = 0;
+
+        void clear() {
+            delete[] packet;
+        }
     };
 
 }
