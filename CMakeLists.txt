@@ -8,10 +8,10 @@ find_package(OpenCV REQUIRED)
 
 set(SOURCE_FILES
         src/main.cpp
-        src/network/tcp_server.cpp
-        src/network/tcp_client.cpp
+        src/network/tcp/tcp_server.cpp
+        src/network/tcp/tcp_client.cpp
         src/network/network.hpp
-        src/network/network.cpp src/frame_transform.hpp src/frame_transform.cpp)
+        src/network/network.cpp src/frame_transform.hpp src/frame_transform.cpp src/network/udp/udp_server.cpp src/network/udp/udp_client.cpp src/network/udp/udp_headers.hpp)
 
 include_directories(avi-maker)
 

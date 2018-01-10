@@ -5,39 +5,39 @@
 #include <netdb.h>
 #include <vector>
 #include <opencv2/videoio.hpp>
-#include "network.hpp"
+#include "../network.hpp"
 //#include "../avi-maker/src/AVIMaker/AVIMaker.h"
 #include "src/AVIMaker/AVIMaker.h"
-#include "../frame_transform.hpp"
+#include "../../frame_transform.hpp"
 
 std::vector<TRIPLERGB **> frames;
 
 
-void packet_maker(vs::packet_info_s &packet_info, TRIPLERGB **mrx, size_t h, size_t w, vs::header_s &header) {
+void tcp_packet_maker(vs::packet_info_s &packet_info, TRIPLERGB **mrx, size_t h, size_t w, vs::tcp_header_s &header) {
     fill_headers(packet_info, header, h, w);
     fill_data(packet_info, header, mrx);
 }
 
-void packet_maker(vs::packet_info_s &packet_info, uint8_t *bytes, size_t h, size_t w, vs::header_s &header) {
+void tcp_packet_maker(vs::packet_info_s &packet_info, uint8_t *bytes, size_t h, size_t w, vs::tcp_header_s &header) {
     fill_headers(packet_info, header, h, w);
     fill_data(packet_info, header, bytes);
 }
 
-void fill_headers(vs::packet_info_s &packet_info, vs::header_s &header, size_t h, size_t w) {
+void fill_headers(vs::packet_info_s &packet_info, vs::tcp_header_s &header, size_t h, size_t w) {
     header.data_length = h * w * 3;
     header.height = h;
     header.width = w;
-    packet_info.length = sizeof(vs::header_s) + header.data_length;
+    packet_info.length = sizeof(vs::tcp_header_s) + header.data_length;
     packet_info.packet = new uint8_t[packet_info.length];
     memcpy(packet_info.packet, &header, sizeof(header));
 }
 
-void fill_data(vs::packet_info_s &packet_info, vs::header_s &header, TRIPLERGB **mrx) {
-    from2d_to_1d_NO_malloc(mrx, header.height, header.width, (packet_info.packet + sizeof(vs::header_s)));
+void fill_data(vs::packet_info_s &packet_info, vs::tcp_header_s &header, TRIPLERGB **mrx) {
+    from2d_to_1d_NO_malloc(mrx, header.height, header.width, (packet_info.packet + sizeof(vs::tcp_header_s)));
 }
 
-void fill_data(vs::packet_info_s &packet_info, vs::header_s &header, uint8_t *bytes) {
-    memcpy(packet_info.packet + sizeof(vs::header_s), bytes, header.data_length);
+void fill_data(vs::packet_info_s &packet_info, vs::tcp_header_s &header, uint8_t *bytes) {
+    memcpy(packet_info.packet + sizeof(vs::tcp_header_s), bytes, header.data_length);
 }
 
 void tcp_client(const char *hostname, uint16_t port, uint16_t deviceID) {
@@ -62,11 +62,11 @@ void tcp_client(const char *hostname, uint16_t port, uint16_t deviceID) {
         //                        Отправка кадра
         //=============================================================
         vs::packet_info_s packet_info;
-        vs::header_s header;
-        header.type = vs::Types::RGBFRAME_TYPE;
-        packet_maker(packet_info, frame, h, w, header);
+        vs::tcp_header_s header;
+        header.type = vs::Types::TCP_RGBFRAME_TYPE;
+        tcp_packet_maker(packet_info, frame, h, w, header);
         for (int i = 0; i < 40; i++) {
-            if (i == sizeof(vs::header_s)) printf("\t");
+            if (i == sizeof(vs::tcp_header_s)) printf("\t");
             printf("%d ", packet_info.packet[i]);
         }
         printf("\n");
@@ -77,7 +77,7 @@ void tcp_client(const char *hostname, uint16_t port, uint16_t deviceID) {
         //=============================================================
         //                       Ожидание ответа
         //=============================================================
-        len = read(sockfd, &header, sizeof(vs::header_s));
+        len = read(sockfd, &header, sizeof(vs::tcp_header_s));
         if (len < 0) break;
         switch (header.type) {
             case vs::Types::ACK_TYPE:

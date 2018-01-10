@@ -1,8 +1,8 @@
 //
 // Created by sfaxi19 on 04.01.18.
 //
-#include "network.hpp"
-#include "../frame_transform.hpp"
+#include "../network.hpp"
+#include "../../frame_transform.hpp"
 
 void tcp_server(uint16_t port) {
     char rBuffer[32];
@@ -27,12 +27,12 @@ void tcp_server(uint16_t port) {
     //printf("sending %6lu bytes\n", n);
     //if (n < 0) PERROR("ERROR write msgInit to client");
 
-    vs::header_s header;
-    vs::header_s header_resp;
+    vs::tcp_header_s header;
+    vs::tcp_header_s header_resp;
     ssize_t len = 0;
     while (1) {
         //len = read(sockfd_data, &header, sizeof(vs::header_s));
-        len = recv(sockfd_data, &header, sizeof(vs::header_s), 0);
+        len = recv(sockfd_data, &header, sizeof(vs::tcp_header_s), 0);
         printf("\t\t\t\treceive %lu bytes.\n", len);
         if (len == 0) break;
 

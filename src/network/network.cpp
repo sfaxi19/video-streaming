@@ -23,7 +23,7 @@ void addr_init(sockaddr_in_t &addr, const char *host_addr, uint16_t port) {
 namespace vs {
     const char *toString(uint16_t type) {
         switch (type) {
-            case vs::Types::RGBFRAME_TYPE:
+            case vs::Types::TCP_RGBFRAME_TYPE:
                 return "Frame";
             case vs::Types::HEADERS_TYPE:
                 return "Headers";
