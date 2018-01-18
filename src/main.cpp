@@ -7,18 +7,12 @@
 #include "network/network.hpp"
 #include "frame_transform.hpp"
 
-/*
- *
- */
-
-
-
-//std::vector<BITMAPINFOHEADER **> frames;
-
 int main(int argn, char *argv[]) {
     int in_argn = argn - 1;
     printf("Input arguments: %d\n", in_argn);
-    if (in_argn < 2) ERROR("Bad input args");
+    if (in_argn < 2) {
+        ERROR("Bad input args");
+    }
     std::string param = argv[1];
     printf("param: %s\n", param.c_str());
     if (param == "-s-udp") {

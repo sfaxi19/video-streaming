@@ -65,15 +65,15 @@ void tcp_client(const char *hostname, uint16_t port, uint16_t deviceID) {
         vs::tcp_header_s header;
         header.type = vs::Types::TCP_RGBFRAME_TYPE;
         tcp_packet_maker(packet_info, frame, h, w, header);
-        for (int i = 0; i < 40; i++) {
+        /*for (int i = 0; i < 40; i++) {
             if (i == sizeof(vs::tcp_header_s)) printf("\t");
             printf("%d ", packet_info.packet[i]);
         }
-        printf("\n");
+        printf("\n");*/
         write(sockfd, packet_info.packet, packet_info.length);
         delete[] frame;
         packet_info.clear();
-        printf("sending %d bytes\n", packet_info.length);
+        //printf("sending %d bytes\n", packet_info.length);
         //=============================================================
         //                       Ожидание ответа
         //=============================================================
@@ -81,10 +81,10 @@ void tcp_client(const char *hostname, uint16_t port, uint16_t deviceID) {
         if (len < 0) break;
         switch (header.type) {
             case vs::Types::ACK_TYPE:
-                printf("Sending complite.\n");
+                //printf("Sending complite.\n");
                 break;
             default:
-                printf("Bad response.\n");
+                //printf("Bad response.\n");
                 len = 0;
                 break;
         }

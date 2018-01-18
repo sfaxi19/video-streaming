@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD 11)
 find_package(OpenCV REQUIRED)
 
 
+find_package (Threads)
+
 set(SOURCE_FILES
         src/main.cpp
         src/network/tcp/tcp_server.cpp
@@ -22,3 +24,4 @@ add_subdirectory(avi-maker/)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 target_link_libraries(video-streaming ${OpenCV_LIBS} avi-maker-lib)
+target_link_libraries(video-streaming ${CMAKE_THREAD_LIBS_INIT})

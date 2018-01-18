@@ -8,20 +8,22 @@
 #include "iostream"
 
 struct udp_fragment {
-    uint16_t id = 0;
-    uint16_t fragments = 0;
-    uint16_t length = 0;
-    uint16_t mtu = 0;
-    uint32_t height = 0;
-    uint32_t width = 0;
+    uint32_t frameID;
+    uint16_t id;
+    uint16_t fragments;
+    uint16_t length;
+    uint16_t mtu;
+    uint32_t height;
+    uint32_t width;
 
     std::string toString() {
-        std::string str;
-        str.append("ID: ").append(std::to_string(id)).append("\n");
-        str.append("Fragments: ").append(std::to_string(fragments)).append("\n");
-        str.append("Length: ").append(std::to_string(length)).append("\n");
-        str.append("Height: ").append(std::to_string(height)).append("\n");
-        str.append("Width: ").append(std::to_string(width)).append("\n");
+        std::string str = "\n";
+        str.append("FrameID:    ").append(std::to_string(frameID)).append("\n");
+        str.append("FragmentID: ").append(std::to_string(id)).append("\n");
+        str.append("Fragments:  ").append(std::to_string(fragments)).append("\n");
+        str.append("Length:     ").append(std::to_string(length)).append("\n");
+        str.append("Height:     ").append(std::to_string(height)).append("\n");
+        str.append("Width:      ").append(std::to_string(width)).append("\n");
         return str;
     }
 
