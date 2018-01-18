@@ -75,7 +75,7 @@ void tcp_client(const char *host, uint16_t port, uint16_t deviceID);
 
 void udp_server(uint16_t port);
 
-void udp_client(const char *host, uint16_t port, uint16_t deviceID);
+void udp_client(const char *host, uint16_t port, uint16_t deviceID, uint16_t mtu);
 
 void addr_init(sockaddr_in_t &addr, uint16_t port);
 

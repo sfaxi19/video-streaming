@@ -14,7 +14,7 @@ void sendBreak(int sockfd, sockaddr_in_t &remote_addr, socklen_t &addr_size) {
     if (res == -1) PERROR("Send error:");
 }
 
-void udp_client(const char *host, uint16_t port, uint16_t deviceID) {
+void udp_client(const char *host, uint16_t port, uint16_t deviceID, uint16_t mtu) {
     int sockfd;
     sockaddr_in_t remote_addr{};
     sockaddr_in_t current_addr{};
@@ -29,7 +29,6 @@ void udp_client(const char *host, uint16_t port, uint16_t deviceID) {
     cv::VideoCapture stream(deviceID);
     if (!stream.isOpened()) ERROR("Device index %d is not correct", deviceID);
     int h, w;
-    uint16_t mtu = 50000;
     vs::packet_info_s packet_info;
     uint32_t frameID = 0;
     do {
