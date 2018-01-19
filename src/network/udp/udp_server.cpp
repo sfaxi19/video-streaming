@@ -66,15 +66,15 @@ void udp_server(uint16_t port) {
             }
             if (fragment->frameID > currentFrameID) {
                 viewFrame = true;
-                printf("%5d | %3d /%3d   ---- new frame\n", fragment->frameID, fragment->id, fragment->fragments);
+                //printf("%5d | %3d /%3d   ---- new frame\n", fragment->frameID, fragment->id, fragment->fragments);
                 currentFrameID = fragment->frameID;
                 break;
             } else if (fragment->frameID < currentFrameID) {
-                printf("\t\t-->%5d | %3d /%3d\n", fragment->frameID, fragment->id, fragment->fragments);
+                //printf("\t\t-->%5d | %3d /%3d\n", fragment->frameID, fragment->id, fragment->fragments);
                 continue;
             } else {
-                printf("%5d | %3d /%3d \t len = %d\n", fragment->frameID, fragment->id, fragment->fragments,
-                       fragment->length);
+                //printf("%5d | %3d /%3d \t len = %d\n", fragment->frameID, fragment->id, fragment->fragments,
+               //        fragment->length);
             }
             //=============================================================
             //                     Считывание фрагмента

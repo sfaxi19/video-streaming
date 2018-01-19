@@ -46,7 +46,7 @@ void udp_client(const char *host, uint16_t port, uint16_t deviceID, uint16_t mtu
         fragment.height = h;
         fragment.width = w;
         fragment.mtu = mtu;
-        for (int repeat = 0; repeat < 10; repeat++) {
+        for (int repeat = 0; repeat < 3; repeat++) {
             for (uint16_t i = 0; i < n_fragments; i++) {
                 fragment.id = i;
                 fragment.fragments = n_fragments;

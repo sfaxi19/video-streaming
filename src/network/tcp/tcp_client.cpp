@@ -5,6 +5,7 @@
 #include <netdb.h>
 #include <vector>
 #include <opencv2/videoio.hpp>
+#include <src/motion_compensation/motion_compensation.h>
 #include "../network.hpp"
 //#include "../avi-maker/src/AVIMaker/AVIMaker.h"
 #include "src/AVIMaker/AVIMaker.h"
@@ -51,13 +52,20 @@ void tcp_client(const char *hostname, uint16_t port, uint16_t deviceID) {
     ssize_t len = 0;
     printf("DeviceID: %d\n", deviceID);
     cv::VideoCapture stream(deviceID);
-    if(!stream.isOpened()) ERROR("Device index %d is not correct", deviceID);
+    uint32_t sum = 0;
+    uint8_t *base = nullptr;
+    if (!stream.isOpened()) ERROR("Device index %d is not correct", deviceID);
     do {
         //=============================================================
         //                       Считывание кадра
         //=============================================================
         int h, w;
         uint8_t *frame = readFrame(stream, h, w);
+        TRIPLERGB *target = (TRIPLERGB *) frame;
+        if ((base != nullptr) && (target != nullptr))
+            sum = mc::sumAbsDiffFrame((TRIPLERGB *) base, target, h, w);
+
+
         //=============================================================
         //                        Отправка кадра
         //=============================================================
@@ -65,30 +73,39 @@ void tcp_client(const char *hostname, uint16_t port, uint16_t deviceID) {
         vs::tcp_header_s header;
         header.type = vs::Types::TCP_RGBFRAME_TYPE;
         tcp_packet_maker(packet_info, frame, h, w, header);
-        /*for (int i = 0; i < 40; i++) {
+        /*
+        for (int i = 0; i < 40; i++) {
             if (i == sizeof(vs::tcp_header_s)) printf("\t");
             printf("%d ", packet_info.packet[i]);
         }
-        printf("\n");*/
-        write(sockfd, packet_info.packet, packet_info.length);
-        delete[] frame;
+        printf("\n");
+        */
+
+        if (sum > 600000) {
+            printf("sum: %d ", sum);
+            printf(" =============>\n", sum);
+            write(sockfd, packet_info.packet, packet_info.length);
+            //=============================================================
+            //                       Ожидание ответа
+            //=============================================================
+            len = read(sockfd, &header, sizeof(vs::tcp_header_s));
+            if (len < 0) break;
+            switch (header.type) {
+                case vs::Types::ACK_TYPE:
+                    //printf("Sending complite.\n");
+                    break;
+                default:
+                    //printf("Bad response.\n");
+                    len = 0;
+                    break;
+            }
+        } else {
+            //printf("no motion");
+        }
+        if (base != nullptr) delete[] base;
+        base = frame;
         packet_info.clear();
         //printf("sending %d bytes\n", packet_info.length);
-        //=============================================================
-        //                       Ожидание ответа
-        //=============================================================
-        len = read(sockfd, &header, sizeof(vs::tcp_header_s));
-        if (len < 0) break;
-        switch (header.type) {
-            case vs::Types::ACK_TYPE:
-                //printf("Sending complite.\n");
-                break;
-            default:
-                //printf("Bad response.\n");
-                len = 0;
-                break;
-        }
-
-    } while (len != 0);
+    } while (1);
     close(sockfd);
 }
