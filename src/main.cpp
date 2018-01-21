@@ -26,13 +26,13 @@ int main(int argn, char *argv[]) {
         return 0;
     }
     if (param == "-c-udp") {
-        if (in_argn != 5) ERROR("Bad input args for -c param:\n[2] - host\n[3] - port\n[4] - deviceID\n[5] - mtu\n");
-        udp_client(argv[2], (uint16_t) atoi(argv[3]), (uint16_t) atoi(argv[4]), (uint16_t) atoi(argv[5]));
+        if (in_argn != 6) ERROR("Bad input args for -c param:\n[2] - host\n[3] - port\n[4] - deviceID\n[5] - mtu\n[6] - onlyMotion");
+        udp_client(argv[2], (uint16_t) atoi(argv[3]), (uint16_t) atoi(argv[4]), (uint16_t) atoi(argv[5]), (bool) atoi(argv[6]));
         return 0;
     }
     if (param == "-c-tcp") {
-        if (in_argn != 4) ERROR("Bad input args for -c param:\n[2] - host\n[3] - port\n[4] - deviceID\n");
-        tcp_client(argv[2], (uint16_t) atoi(argv[3]), (uint16_t) atoi(argv[4]));
+        if (in_argn != 5) ERROR("Bad input args for -c param:\n[2] - host\n[3] - port\n[4] - deviceID\n[5] - onlyMotion");
+        tcp_client(argv[2], (uint16_t) atoi(argv[3]), (uint16_t) atoi(argv[4]), (bool) atoi(argv[5]));
         return 0;
     }
     ERROR("Bad input args");

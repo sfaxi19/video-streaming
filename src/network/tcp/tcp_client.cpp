@@ -41,7 +41,7 @@ void fill_data(vs::packet_info_s &packet_info, vs::tcp_header_s &header, uint8_t
     memcpy(packet_info.packet + sizeof(vs::tcp_header_s), bytes, header.data_length);
 }
 
-void tcp_client(const char *hostname, uint16_t port, uint16_t deviceID) {
+void tcp_client(const char *hostname, uint16_t port, uint16_t deviceID, bool onlyMotion) {
     int sockfd;
     sockaddr_in_t addr{};
     sockfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -60,11 +60,16 @@ void tcp_client(const char *hostname, uint16_t port, uint16_t deviceID) {
         //                       Считывание кадра
         //=============================================================
         int h, w;
-        uint8_t *frame = readFrame(stream, h, w);
-        TRIPLERGB *target = (TRIPLERGB *) frame;
-        if ((base != nullptr) && (target != nullptr))
-            sum = mc::sumAbsDiffFrame((TRIPLERGB *) base, target, h, w);
+        //uint8_t *frame = readFrame(stream, h, w);
+        uint8_t *frame = readVideoFrame(
+                "/home/sfaxi19/Projects/CLionProjects/video-streaming/avi-maker/resources/lr1_1.AVI",
+                h, w);
 
+        if (onlyMotion) {
+            TRIPLERGB *target = (TRIPLERGB *) frame;
+            if ((base != nullptr) && (target != nullptr))
+                sum = mc::sumAbsDiffFrame((TRIPLERGB *) base, target, h, w);
+        }
 
         //=============================================================
         //                        Отправка кадра
@@ -81,9 +86,8 @@ void tcp_client(const char *hostname, uint16_t port, uint16_t deviceID) {
         printf("\n");
         */
 
-        if (sum > 600000) {
-            printf("sum: %d ", sum);
-            printf(" =============>\n", sum);
+        if ((sum > 600000) || (!onlyMotion)) {
+            printf("sum: %d =========>", sum);
             write(sockfd, packet_info.packet, packet_info.length);
             //=============================================================
             //                       Ожидание ответа

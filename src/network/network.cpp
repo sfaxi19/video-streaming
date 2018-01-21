@@ -1,6 +1,7 @@
 //
 // Created by sfaxi19 on 04.01.18.
 //
+#include <src/AVIMaker/AVIMaker.h>
 #include "network.hpp"
 
 void addr_init(sockaddr_in_t &addr, uint16_t port) {
@@ -62,6 +63,19 @@ void from2d_to_1d_NO_malloc(TRIPLERGB **mrx, int h, int w, uint8_t *out) {
             out[id++] = mrx[i][j].red;
         }
     }
+}
+
+
+uint8_t *readVideoFrame(char const *filename, int &h, int &w) {
+    static uint32_t frameID = 0;
+    static AVIMaker avi_file(filename);
+    VideoStream *video = avi_file.video();
+    TRIPLERGB **frame = video->getFrame(frameID);
+    if (frame == nullptr) return nullptr;
+    h = video->height();
+    w = video->width();
+    frameID++;
+    return from2d_to_rev_1d_malloc(frame, h, w);
 }
 
 uint8_t *from2d_to_1d_malloc(TRIPLERGB **mrx, int h, int w) {

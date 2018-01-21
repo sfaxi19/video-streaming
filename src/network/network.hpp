@@ -62,6 +62,7 @@ namespace vs {
 
 }
 
+uint8_t *readVideoFrame(char const *filename, int &h, int &w);
 
 void from2d_to_1d_NO_malloc(TRIPLERGB **mrx, int h, int w, uint8_t *out);
 
@@ -71,11 +72,11 @@ uint8_t *from2d_to_rev_1d_malloc(TRIPLERGB **mrx, int h, int w);
 
 void tcp_server(uint16_t port);
 
-void tcp_client(const char *host, uint16_t port, uint16_t deviceID);
+void tcp_client(const char *hostname, uint16_t port, uint16_t deviceID, bool onlyMotion);
 
 void udp_server(uint16_t port);
 
-void udp_client(const char *host, uint16_t port, uint16_t deviceID, uint16_t mtu);
+void udp_client(const char *host, uint16_t port, uint16_t deviceID, uint16_t mtu, bool onlyMotion);
 
 void addr_init(sockaddr_in_t &addr, uint16_t port);
 
