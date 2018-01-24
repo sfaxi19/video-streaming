@@ -44,7 +44,7 @@ void udp_client(const char *host, uint16_t port, uint16_t deviceID, uint16_t mtu
         //                       Считывание кадра
         //=============================================================
         //uint8_t *frame = readFrame(stream, h, w);
-	//std::this_thread::sleep_for(std::chrono::milliseconds(30));
+	std::this_thread::sleep_for(std::chrono::milliseconds(30));
 	uint8_t *frame = readVideoFrame(avi_file,h, w);
         if (frame == nullptr) break;
         //=============================================================
