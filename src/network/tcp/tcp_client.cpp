@@ -31,7 +31,7 @@ void fill_headers(vs::packet_info_s &packet_info, vs::tcp_header_s &header, size
     header.height = h;
     header.width = w;
     packet_info.length = sizeof(vs::tcp_header_s) + header.data_length;
-    packet_info.packet = new uint8_t[packet_info.length];
+    if (packet_info.packet == nullptr) packet_info.packet = new uint8_t[packet_info.length];
     memcpy(packet_info.packet, &header, sizeof(header));
 }
 
@@ -49,17 +49,18 @@ void tcp_client(const char *hostname, uint16_t port, uint16_t deviceID, bool onl
     sockfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (sockfd < 0) PERROR("ERROR opening socket");
     addr_init(addr, hostname, port);
-    if (connect(sockfd, (sockaddr_t *) &addr, sizeof(addr)) != 0) PERROR("ERROR on connect");
-    printf("Connection complite.\n");
     ssize_t len = 0;
     printf("DeviceID: %d\n", deviceID);
-    //cv::VideoCapture stream(deviceID);
     uint32_t sum = 0;
     uint8_t *base = nullptr;
-    //if (!stream.isOpened()) ERROR("Device index %d is not correct", deviceID);
     AVIMaker avi_file("../avi-maker/resources/video.AVI");
-    std::cout << "Press SPACE" << std::endl;
+    std::cout << "Press ENTER" << std::endl;
     std::cin.get();
+    if (connect(sockfd, (sockaddr_t *) &addr, sizeof(addr)) != 0) PERROR("ERROR on connect");
+    printf("Connection complite.\n");
+    vs::packet_info_s packet_info;
+    vs::tcp_header_s header;
+    int id = 0;
     do {
         //=============================================================
         //                       Считывание кадра
@@ -69,51 +70,18 @@ void tcp_client(const char *hostname, uint16_t port, uint16_t deviceID, bool onl
 	//std::this_thread::sleep_for(std::chrono::milliseconds(30));
 	uint8_t *frame = readVideoFrame(avi_file,h, w);
 	if (frame == nullptr) break;
-//        if (onlyMotion) {
-//            TRIPLERGB *target = (TRIPLERGB *) frame;
-//            if ((base != nullptr) && (target != nullptr))
-//                sum = mc::sumAbsDiffFrame((TRIPLERGB *) base, target, h, w);
-//        }
-
         //=============================================================
         //                        Отправка кадра
         //=============================================================
-        vs::packet_info_s packet_info;
-        vs::tcp_header_s header;
         header.type = vs::Types::TCP_RGBFRAME_TYPE;
-        tcp_packet_maker(packet_info, frame, h, w, header);
-        /*
-        for (int i = 0; i < 40; i++) {
-            if (i == sizeof(vs::tcp_header_s)) printf("\t");
-            printf("%d ", packet_info.packet[i]);
-        }
-        printf("\n");
-        */
-
-        if ((sum > 600000) || (!onlyMotion)) {
-            //printf("sum: %d =========>\n", sum);
-            write(sockfd, packet_info.packet, packet_info.length);
-            //=============================================================
-            //                       Ожидание ответа
-            //=============================================================
-            /*len = read(sockfd, &header, sizeof(vs::tcp_header_s));
-            if (len < 0) break;
-            switch (header.type) {
-                case vs::Types::ACK_TYPE:
-                    //printf("Sending complite.\n");
-                    break;
-                default:
-                    //printf("Bad response.\n");
-                    len = 0;
-                    break;
-            }*/
-        } else {
-            //printf("no motion");
-        }
-        if (base != nullptr) delete[] base;
-        base = frame;
-        packet_info.clear();
+        //tcp_packet_maker(packet_info, frame, h, w, header);
+        if (packet_info.packet == nullptr) fill_headers(packet_info,header,h,w);
+	fill_data(packet_info,header,frame);
+	write(sockfd, packet_info.packet, packet_info.length);
+	printf("%4d\n",id++);
+        //packet_info.clear();
         //printf("sending %d bytes\n", packet_info.length);
     } while (1);
+    packet_info.clear();
     close(sockfd);
 }

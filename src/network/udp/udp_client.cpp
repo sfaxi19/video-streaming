@@ -31,8 +31,6 @@ void udp_client(const char *host, uint16_t port, uint16_t deviceID, uint16_t mtu
     addr_init(current_addr, 0);
     if (bind(sockfd, (sockaddr_t *) &current_addr, addr_size) < 0) PERROR("ERROR on binding");
     printf("DeviceID: %d\n", deviceID);
-    //cv::VideoCapture stream(deviceID);
-    //if (!stream.isOpened()) ERROR("Device index %d is not correct", deviceID);
     int h, w;
     vs::packet_info_s packet_info;
     uint32_t frameID = 0;
@@ -46,14 +44,9 @@ void udp_client(const char *host, uint16_t port, uint16_t deviceID, uint16_t mtu
         //                       Считывание кадра
         //=============================================================
         //uint8_t *frame = readFrame(stream, h, w);
-	std::this_thread::sleep_for(std::chrono::milliseconds(30));
+	//std::this_thread::sleep_for(std::chrono::milliseconds(30));
 	uint8_t *frame = readVideoFrame(avi_file,h, w);
         if (frame == nullptr) break;
-	if (onlyMotion) {
-            //TRIPLERGB *target = (TRIPLERGB *) frame;
-            //if ((base != nullptr) && (target != nullptr))
-                //sum = mc::sumAbsDiffFrame((TRIPLERGB *) base, target, h, w);
-        }
         //=============================================================
         //                        Отправка кадра
         //=============================================================
