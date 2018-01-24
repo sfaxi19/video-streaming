@@ -4,12 +4,14 @@
 
 #include <netdb.h>
 #include <vector>
-#include <opencv2/videoio.hpp>
+//#include <opencv2/videoio.hpp>
 #include <src/motion_compensation/motion_compensation.h>
 #include "../network.hpp"
 //#include "../avi-maker/src/AVIMaker/AVIMaker.h"
 #include "src/AVIMaker/AVIMaker.h"
 #include "../../frame_transform.hpp"
+#include <chrono>
+#include <thread>
 
 std::vector<TRIPLERGB **> frames;
 
@@ -51,25 +53,27 @@ void tcp_client(const char *hostname, uint16_t port, uint16_t deviceID, bool onl
     printf("Connection complite.\n");
     ssize_t len = 0;
     printf("DeviceID: %d\n", deviceID);
-    cv::VideoCapture stream(deviceID);
+    //cv::VideoCapture stream(deviceID);
     uint32_t sum = 0;
     uint8_t *base = nullptr;
-    if (!stream.isOpened()) ERROR("Device index %d is not correct", deviceID);
+    //if (!stream.isOpened()) ERROR("Device index %d is not correct", deviceID);
+    AVIMaker avi_file("../avi-maker/resources/video.AVI");
+    std::cout << "Press SPACE" << std::endl;
+    std::cin.get();
     do {
         //=============================================================
         //                       Считывание кадра
         //=============================================================
         int h, w;
         //uint8_t *frame = readFrame(stream, h, w);
-        uint8_t *frame = readVideoFrame(
-                "/home/sfaxi19/Projects/CLionProjects/video-streaming/avi-maker/resources/lr1_1.AVI",
-                h, w);
-
-        if (onlyMotion) {
-            TRIPLERGB *target = (TRIPLERGB *) frame;
-            if ((base != nullptr) && (target != nullptr))
-                sum = mc::sumAbsDiffFrame((TRIPLERGB *) base, target, h, w);
-        }
+	//std::this_thread::sleep_for(std::chrono::milliseconds(30));
+	uint8_t *frame = readVideoFrame(avi_file,h, w);
+	if (frame == nullptr) break;
+//        if (onlyMotion) {
+//            TRIPLERGB *target = (TRIPLERGB *) frame;
+//            if ((base != nullptr) && (target != nullptr))
+//                sum = mc::sumAbsDiffFrame((TRIPLERGB *) base, target, h, w);
+//        }
 
         //=============================================================
         //                        Отправка кадра
@@ -87,12 +91,12 @@ void tcp_client(const char *hostname, uint16_t port, uint16_t deviceID, bool onl
         */
 
         if ((sum > 600000) || (!onlyMotion)) {
-            printf("sum: %d =========>", sum);
+            //printf("sum: %d =========>\n", sum);
             write(sockfd, packet_info.packet, packet_info.length);
             //=============================================================
             //                       Ожидание ответа
             //=============================================================
-            len = read(sockfd, &header, sizeof(vs::tcp_header_s));
+            /*len = read(sockfd, &header, sizeof(vs::tcp_header_s));
             if (len < 0) break;
             switch (header.type) {
                 case vs::Types::ACK_TYPE:
@@ -102,7 +106,7 @@ void tcp_client(const char *hostname, uint16_t port, uint16_t deviceID, bool onl
                     //printf("Bad response.\n");
                     len = 0;
                     break;
-            }
+            }*/
         } else {
             //printf("no motion");
         }

@@ -21,6 +21,8 @@ typedef struct sockaddr sockaddr_t;
 #define PERROR(msg) { perror(msg); exit(1);}
 #define ERROR(...) { printf(__VA_ARGS__); exit(1);}
 
+class AVIMaker;
+
 namespace vs {
     enum Types : uint16_t {
         UNKNOWN_TYPE = 0,
@@ -62,7 +64,7 @@ namespace vs {
 
 }
 
-uint8_t *readVideoFrame(char const *filename, int &h, int &w);
+uint8_t *readVideoFrame(AVIMaker &avi_file, int &h, int &w);
 
 void from2d_to_1d_NO_malloc(TRIPLERGB **mrx, int h, int w, uint8_t *out);
 

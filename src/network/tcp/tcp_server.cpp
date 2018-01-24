@@ -54,10 +54,10 @@ void tcp_server(uint16_t port) {
         }
         printf("\n");
         */
-        cv::Mat matFrame = matFromBytes(frame, header.height, header.width).clone();
-        showFrame("receive", matFrame);
-        if (cv::waitKey(30) >= 0)
-            break;
+        //cv::Mat matFrame = matFromBytes(frame, header.height, header.width).clone();
+        //showFrame("receive", matFrame);
+        //if (cv::waitKey(30) >= 0)
+        //    break;
         delete[] frame;
         header_resp.type = vs::Types::ACK_TYPE;
         send(sockfd_data, &header_resp, sizeof(header_resp), 0);

@@ -2,14 +2,15 @@
 // Created by sfaxi19 on 06.01.18.
 //
 #include <src/bmp_lib/bmp_headers.hpp>
-#include <opencv2/core/mat.hpp>
+//#include <opencv2/core/mat.hpp>
 #include <iostream>
-#include <opencv2/videoio.hpp>
-#include <opencv/cv.hpp>
+//#include <opencv2/videoio.hpp>
+//#include <opencv/cv.hpp>
 #include "frame_transform.hpp"
 #include "network/network.hpp"
 
 // Using matFromBytes().clone() !!!
+/*
 cv::Mat matFromBytes(uint8_t *data, int h, int w) {
     if (data == NULL) ERROR("Null ptr");
     cv::Mat mat = cv::Mat(h, w, CV_8UC3, data);
@@ -45,7 +46,7 @@ uint8_t *readFrame(cv::VideoCapture &stream, int &h, int &w) {
     std::memcpy(bytes, matFrame.data, size);
     return bytes;
 }
-
+*/
 void testOpenCV(int deviceID) {
     /*AVIMaker avi("../avi-maker/resources/lr1_1.AVI");
     TRIPLERGB **frame = avi.video()->getFrame(0);

@@ -1,11 +1,11 @@
 #include <iostream>
-#include <opencv2/videoio.hpp>
-#include <opencv/cv.hpp>
-#include <src/AVIMaker/AVIMaker.h>
-#include <bits/unique_ptr.h>
+//#include <opencv2/videoio.hpp>
+//#include <opencv/cv.hpp>
+//#include <src/AVIMaker/AVIMaker.h>
+//#include <bits/unique_ptr.h>
 //#include "../avi-maker/src/AVIMaker/AVIMaker.h"
 #include "network/network.hpp"
-#include "frame_transform.hpp"
+//#include "frame_transform.hpp"
 
 int main(int argn, char *argv[]) {
     int in_argn = argn - 1;

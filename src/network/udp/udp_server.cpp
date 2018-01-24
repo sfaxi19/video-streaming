@@ -12,6 +12,7 @@ uint32_t height = 0;
 uint32_t width = 0;
 bool viewFrame = false;
 
+/*
 void view() {
     while (1) {
         if ((frame == nullptr) || (!viewFrame)) continue;
@@ -23,6 +24,7 @@ void view() {
             break;
     }
 }
+*/
 
 void udp_server(uint16_t port) {
     int sockfd;
@@ -39,7 +41,7 @@ void udp_server(uint16_t port) {
     ssize_t len = 0;
     uint32_t currentFrameID = 0;
     fragment = (udp_fragment *) buffer;
-    std::thread view_thread(view);
+    //std::thread view_thread(view);
     while (1) {
         do {
             len = recvfrom(sockfd, &buffer, sizeof(buffer), 0, (sockaddr_t *) &remote_addr, &addr_size);
