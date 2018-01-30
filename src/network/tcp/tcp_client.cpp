@@ -55,7 +55,7 @@ void tcp_client(const char *hostname, uint16_t port, uint16_t deviceID) {
     uint32_t sum = 0;
     uint8_t *base = nullptr;
     if (!stream.isOpened()) ERROR("Device index %d is not correct", deviceID);
-    do {
+    do {0
         //=============================================================
         //                       Считывание кадра
         //=============================================================
@@ -64,8 +64,6 @@ void tcp_client(const char *hostname, uint16_t port, uint16_t deviceID) {
         TRIPLERGB *target = (TRIPLERGB *) frame;
         if ((base != nullptr) && (target != nullptr))
             sum = mc::sumAbsDiffFrame((TRIPLERGB *) base, target, h, w);
-
-
         //=============================================================
         //                        Отправка кадра
         //=============================================================

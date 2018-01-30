@@ -6,6 +6,7 @@
 #include "../../frame_transform.hpp"
 #include "udp_headers.hpp"
 
+static const int REPEATS = 1;
 void sendBreak(int sockfd, sockaddr_in_t &remote_addr, socklen_t &addr_size) {
     udp_fragment fragment;
     fragment.length = 0;
@@ -46,7 +47,7 @@ void udp_client(const char *host, uint16_t port, uint16_t deviceID, uint16_t mtu
         fragment.height = h;
         fragment.width = w;
         fragment.mtu = mtu;
-        for (int repeat = 0; repeat < 3; repeat++) {
+        for (int repeat = 0; repeat < REPEATS; repeat++) {
             for (uint16_t i = 0; i < n_fragments; i++) {
                 fragment.id = i;
                 fragment.fragments = n_fragments;

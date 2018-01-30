@@ -1,8 +1,27 @@
 //
 // Created by sfaxi19 on 04.01.18.
 //
+#include <thread>
 #include "../network.hpp"
 #include "../../frame_transform.hpp"
+
+static uint8_t *frame = nullptr;
+static bool viewFrame = false;
+static int height = 0;
+static int width = 0;
+static bool isBreak = false;
+
+void tcpview() {
+    while (!isBreak) {
+        if ((frame == nullptr) || (!viewFrame)) continue;
+        //printf("=============>\n");
+        cv::Mat matFrame = cv::Mat(height, width, CV_8UC3, frame).clone();
+        showFrame("receive", matFrame);
+        viewFrame = false;
+        if (cv::waitKey(30) >= 0)
+            break;
+    }
+}
 
 void tcp_server(uint16_t port) {
     char rBuffer[32];
@@ -28,40 +47,36 @@ void tcp_server(uint16_t port) {
 
     vs::tcp_header_s header;
     vs::tcp_header_s header_resp;
-    ssize_t len = 0;
+    std::thread view_thread(tcpview);
+    int id = 0;
     while (1) {
-        //len = read(sockfd_data, &header, sizeof(vs::header_s));
-        len = recv(sockfd_data, &header, sizeof(vs::tcp_header_s), 0);
-        //printf("\t\t\t\treceive %lu bytes.\n", len);
-        if (len == 0) break;
-
-        if (header.isValid()) {
-            //printf("\nReceive header:\n%s", header.toString().c_str());
+        if (0 == recv(sockfd_data, &header, sizeof(vs::tcp_header_s), MSG_WAITALL)) {
+            break;
         }
-        else {
-            //ERROR("%s\n%s\n", header.toString().c_str(), "Header - not valid");
+        if (!header.isValid()) {
             printf("WARNING: %s\n%s\n", header.toString().c_str(), "Header - not valid");
             break;
         }
-        uint8_t *frame = new uint8_t[header.data_length];
-
-        //len = read(sockfd_data, frame, header.data_length);
-        len = recv(sockfd_data, frame, header.data_length, MSG_WAITALL);
-        if (len == 0) break;
-        /*printf("\t\t\t\treceive %lu bytes\n", len);
-        for (int i = 0; i < 40; i++) {
-            printf("%d ", frame[i]);
+        if (frame == nullptr) {
+            frame = new uint8_t[header.data_length];
+            height = header.height;
+            width = header.width;
         }
-        printf("\n");
-        */
-        cv::Mat matFrame = matFromBytes(frame, header.height, header.width).clone();
+
+        if (0 == recv(sockfd_data, frame, header.data_length, MSG_WAITALL)) {
+            break;
+        }
+        /*cv::Mat matFrame = matFromBytes(frame, header.height, header.width).clone();
         showFrame("receive", matFrame);
         if (cv::waitKey(30) >= 0)
-            break;
-        delete[] frame;
-        header_resp.type = vs::Types::ACK_TYPE;
-        send(sockfd_data, &header_resp, sizeof(header_resp), 0);
+            break;*/
+        viewFrame = true;
+        printf("%4d\n", id++);
+        //header_resp.type = vs::Types::ACK_TYPE;
+        //send(sockfd_data, &header_resp, sizeof(header_resp), 0);
     };
+    delete[] frame;
+    isBreak = true;
     close(sockfd_data);
     close(sockfd);
 }

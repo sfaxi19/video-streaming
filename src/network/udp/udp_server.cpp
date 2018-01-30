@@ -15,7 +15,7 @@ bool viewFrame = false;
 void view() {
     while (1) {
         if ((frame == nullptr) || (!viewFrame)) continue;
-        printf("=============>\n");
+        //printf("=============>\n");
         cv::Mat matFrame = cv::Mat(height, width, CV_8UC3, frame).clone();
         showFrame("receive", matFrame);
         viewFrame = false;
@@ -74,7 +74,7 @@ void udp_server(uint16_t port) {
                 continue;
             } else {
                 //printf("%5d | %3d /%3d \t len = %d\n", fragment->frameID, fragment->id, fragment->fragments,
-               //        fragment->length);
+                //        fragment->length);
             }
             //=============================================================
             //                     Считывание фрагмента
